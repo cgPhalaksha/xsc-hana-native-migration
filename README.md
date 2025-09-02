@@ -266,19 +266,19 @@ Once the project is created, there are some adjustments we need to make manually
     For the HCO_DEMOCONTENT project, make the following changes:
     - Delete the uis folder from db/cfg
     - Delete `synonym-grantor-service.hdbgrants` and `synonym-grantor-service.hdbsynonymconfig` from db/cfg
-    - Delete `synonym-grantor-service.hdbsynonym` from db/src/uis/db
+    - Delete the uis and ui folder in db/src
     - Delete `synonym-grantor-service.hdbsynonym` from db/src/models
  2. In order to access objects from other public schemas, you will need to either create a new hdbsynonym file or modify an existing one.
     For the HCO_DEMOCONTENT project, edit the `db/src/synonym-grantor-service.hdbsynonym` file with the following configuration:
     ```
     {
-      "SAP_HANA_DEMOCONTENT_EPM_DUMMY": {
+      "sap.hana.democontent.epm::DUMMY": {
          "target": {
            "schema": "SYS",
            "object": "DUMMY"
          }
       },
-      "SAP_HANA_DEMOCONTENT_EPM_M_TIME_DIMENSION": {
+      "sap.hana.democontent.epm::M_TIME_DIMENSION": {
          "target": {
            "schema": "_SYS_BI",
            "object": "M_TIME_DIMENSION"
@@ -293,15 +293,14 @@ Once the project is created, there are some adjustments we need to make manually
     }
     ```
  3. In addition, please take the time to clear out unused role names from the `default_access_role.hdbrole` file located in the db/src/defaults folder. If there are specific roles required for your project, ensure to add them as needed.
-    For the HCO_DEMOCONTENT project, Remove `SAP_HANA_DEMOCONTENT_EPM_MIGRATION_ALL_ANALYTIC_PRIV` role under names. 
+    For the HCO_DEMOCONTENT project, Remove `sap.hana.democontent.epm::migration_all_analytic_priv` role under names. 
     
  4. The assistant will modify the name of the artifacts in your project. Therefore, ensure to update the references to these artifacts accordingly.
     - For the HCO_DEMOCONTENT project, you'll need to adjust the references for entities under the `currencyConversionTables` tag. This is located in the `db/src/models/PURCHASE_COMMON_CURRENCY.hdbcalculationview` file. Make the changes as follows:
 
       ```
-      <currencyConversionTables rates="SAP_HANA_DEMOCONTENT_EPM_DATA_CONVERSIONS_TCURR" configuration="SAP_HANA_DEMOCONTENT_EPM_DATA_CONVERSIONS_TCURV" prefactors="SAP_HANA_DEMOCONTENT_EPM_DATA_CONVERSIONS_TCURF" notations="SAP_HANA_DEMOCONTENT_EPM_DATA_CONVERSIONS_TCURN" precisions="SAP_HANA_DEMOCONTENT_EPM_DATA_CONVERSIONS_TCURX"/>
+      <currencyConversionTables rates="sap.hana.democontent.epm.data::Conversions.TCURR" configuration="sap.hana.democontent.epm.data::Conversions.TCURV" prefactors="sap.hana.democontent.epm.data::Conversions.TCURF" notations="sap.hana.democontent.epm.data::Conversions.TCURN" precisions="sap.hana.democontent.epm.data::Conversions.TCURX"/>
       ```
-    - In the `db/src/models/AP_PURCHASE_ORDER_PROD_CAT_2.hdbanalyticprivilege` file, please change the `ProductCategory` in the filter tag to `CATEGORY`
 
  5.  Unused configurations should be removed from hdbrole files, or these files should be adjusted to add supported options.
      For the HCO_DEMOCONTENT project, make the following alterations:
@@ -363,24 +362,24 @@ Once the project is created, there are some adjustments we need to make manually
        {
       	  "schema_reference": "< Schema Name >",
       	  "privileges": [
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_6",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_1",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_2",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_4",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_12",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_3",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_9",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_PURCHASE_ORDER_2",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_10",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_PURCHASE_ORDER_PROD_CAT_1",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_PURCHASE_ORDER_3",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_5",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_PURCHASE_ORDER_1",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_SALES_ORDER_7",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_PURCHASE_ORDER_PROD_CAT_2",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_PURCHASE_ORDER",
-             "SAP_HANA_DEMOCONTENT_EPM_MODELS_AP_PURCHASE_ORDER_PROD_CAT"
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_6",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_1",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_2",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_4",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_12",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_3",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_9",
+             "sap.hana.democontent.epm.models::AP_PURCHASE_ORDER_2",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_10",
+             "sap.hana.democontent.epm.models::AP_PURCHASE_ORDER_PROD_CAT_1",
+             "sap.hana.democontent.epm.models::AP_PURCHASE_ORDER_3",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_5",
+             "sap.hana.democontent.epm.models::AP_PURCHASE_ORDER_1",
+             "sap.hana.democontent.epm.models::AP_SALES_ORDER_7",
+             "sap.hana.democontent.epm.models::AP_PURCHASE_ORDER_PROD_CAT_2",
+             "sap.hana.democontent.epm.models::AP_PURCHASE_ORDER",
+             "sap.hana.democontent.epm.models::AP_PURCHASE_ORDER_PROD_CAT"
       	  ]
        }
        ],
@@ -390,20 +389,17 @@ Once the project is created, there are some adjustments we need to make manually
     For the HCO_DEMOCONTENT project, create an `Admin.hdbroleconfig` file in the `db/src/roles/` directory. The file should contain the following configuration:
     ```
     {
-      "SAP_HANA_DEMOCONTENT_EPM_ROLES_ADMIN": {
+      "sap.hana.democontent.epm.roles::Admin": {
          "< Schema Name >": {
             "schema": "< Schema Name >"
          }
       }
     }
     ```
- 7. Adjust SQL syntax in procedures. For instance, "UPDATE FROM" should be changed to "MERGE INTO", and "TRUNCATE" statements should be replaced with "DELETE FROM" statements.
- 8. Currently, changes to Reptask, and Replication artifacts are not covered. You will need to modify these manually. Unsupported types and functions in the calculation view such as "CE_FUNCTION", "CACHE", etc., need to be noted. Please refer to the [SAP HANA Cloud Documentation](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-migration-guide/checks-performed-by-migration-tool) for more details on how to handle these.
- 9.  Series entity is not supported in Hana Cloud so they will be removed by the extension. Please check [Migration Documentation](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-migration-guide/series-data%22) for more information.
- 10. For HdbSynonym, HdbSynonymconfig and Hdbrole files, please check target object parameters before deployment.
-     - In `db/cfg/models/synonym-grantor-service.hdbsynonymconfig` file, Change the `target.object` from `sap.hana.democontent.epm.models::SALES_ORDER_RANKING` to `SAP_HANA_DEMOCONTENT_EPM_MODELS_SALES_ORDER_RANKING`.
-     - In `db/src/roles/Admin.hdbrole` file, Change the role name from `sap.hana.democontent.epm.roles::Admin` to `SAP_HANA_DEMOCONTENT_EPM_ROLES_ADMIN`.
-     - In `db/src/roles/User.hdbrole` file, Change the role name from `sap.hana.democontent.epm.roles::User` to `SAP_HANA_DEMOCONTENT_EPM_ROLES_USER`.
+ 7. In each of the .hdbtabledata files under db/src/data/loads remove the namespace `sap.hana.democontent.epm.data.loads::` from the csv file names `file_name`. For example change `sap.hana.democontent.epm.data.loads::constants.csv` to `constants.csv`.
+ 8. Adjust SQL syntax in procedures. For instance, "UPDATE FROM" should be changed to "MERGE INTO", and "TRUNCATE" statements should be replaced with "DELETE FROM" statements.
+ 9. Currently, changes to Reptask, and Replication artifacts are not covered. You will need to modify these manually. Unsupported types and functions in the calculation view such as "CE_FUNCTION", "CACHE", etc., need to be noted. Please refer to the [SAP HANA Cloud Documentation](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-migration-guide/checks-performed-by-migration-tool) for more details on how to handle these.
+ 10.  Series entity is not supported in Hana Cloud so they will be removed by the extension. Please check [Migration Documentation](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-migration-guide/series-data%22) for more information.
 
 ## Step-6: Deployment of the Migrated database artifacts
 
@@ -436,9 +432,6 @@ Once the project is created, there are some adjustments we need to make manually
    GRANT SELECT ON SCHEMA "_SYS_BI" TO "< Schema Name >#OO" WITH GRANT OPTION;
    ```
 8. To deploy your application, select the "Deploy" button located in the "SAP HANA Projects" section.
-
-## Data Migration
-For migration of data using the SAP HANA Application Migration Assistant, please refer to the [DataMigration](DataMigration.md) document.
 
 ## Known Issues in SAP HANA Application Migration Assistant
 
