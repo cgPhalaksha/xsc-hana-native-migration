@@ -234,13 +234,6 @@ And the following additional properties:
 <img width="545" alt="end" src="images\xscCompatibilityMode.png">
 </p>
 
-11. Select the Migration Type (Default: non-staged)
-If your application depends on objects from external schemas or HDI containers, a non-staged migration generates single hdbsynonym, hdbsynonymconfig, and hdbgrants files to provide access. Staged migration, on the other hand, creates separate files for each external object, allowing you to isolate access as needed.
-
-<p align="center">
-<img width="545" alt="end" src="images\stagedMigration.png">
-</p>
-
 **xsc-compatibility-mode** is a view property introduced to maintain behavioral compatibility with how Calculation Views, especially those with aggregation nodes or star joins, worked in XS Classic (XSC) when migrating them to HANA Deployment Infrastructure (HDI) in XSA.
 In the SAP HANA Application Migration Assistant, the UI provides a drop down with 3 options for the xsc-compatibility-mode. 
 	They are: 
@@ -250,7 +243,14 @@ In the SAP HANA Application Migration Assistant, the UI provides a drop down wit
 
 please refer to [xsCompatibilitymode](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-modeling-guide-for-sap-business-application-studio/70d331c824b5460b82c1fb7f9919ee18.html?q=compatibility).
 
-11. When a notification appears in the bottom-right corner of your screen, it indicates that the migration process has started. This notification will provide real-time updates throughout the process. 
+11. Select the Migration Type (Default: non-staged) and click on Finish
+If your application depends on objects from external schemas or HDI containers, a non-staged migration generates single hdbsynonym, hdbsynonymconfig, and hdbgrants files to provide access. Staged migration, on the other hand, creates separate files for each external object, allowing you to isolate access as needed.
+
+<p align="center">
+<img width="545" alt="end" src="images\stagedMigration.png">
+</p>
+
+12. When a notification appears in the bottom-right corner of your screen, it indicates that the migration process has started. This notification will provide real-time updates throughout the process. 
 At the end of the migration, a SAP HANA Native project will be generated, containing:
     -  Revised database artifacts
     -  A `report.html` file summarizing migration details and areas requiring manual review.
