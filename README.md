@@ -11,7 +11,7 @@
   - [Where to Start](#where-to-start)
   - [Step-1: Install and Configure the SAP Cloud Connector](#step-1-install-and-configure-the-sap-cloud-connector)
   - [Step-2: Setup an SAP BTP Destination to connect to the source system](#step-2-setup-an-sap-btp-destination-to-connect-to-the-source-system)
-  - [Step-3: Create a SAP Business Application Studio or SAP Build Devspace with the SAP HANA Application Migration Assistant Extension installed](#step-3-create-a-sap-business-application-studio-or-sap-build-devspace-with-the-sap-hana-application-migration-assistant-extension-installed)
+  - [Step-3: Create a SAP Business Application Studio Devspace with the SAP HANA Application Migration Assistant Extension installed](#step-3-create-a-sap-business-application-studio-devspace-with-the-sap-hana-application-migration-assistant-extension-installed)
   - [Step-4: Migrate using the SAP HANA Application Migration Assistant](#step-4-migrate-using-the-sap-hana-application-migration-assistant)
   - [Step-5: Database post migration changes](#step-5-database-post-migration-changes)
   - [Step-6: Deployment of the Migrated database artifacts](#step-6-deployment-of-the-migrated-database-artifacts)
@@ -28,9 +28,7 @@ The SAP HANA Application Migration Assistant enables users to migrate XS Classic
 
 In this enhanced version, the assistant performs:
 
-**Automated Conversion of Database Artifacts:** Source XS Classic Repository database objects (such as .hdbcds, .hdbtable, .hdbview, etc.) are transformed into their corresponding SAP HANA Native compliant database artifacts, with naming adapted to SAP HANA Cloud conventions.
-
-**Application Layer Migration:** The assistant analyzes `.xsodata`, `.xsjs`, and `.xsjslib` files to generate corresponding HANA native service definitions and implementations. This accelerates the migration of service logic while preserving structure, routes, and functional behavior where possible.
+**Automated Conversion of Database Artifacts:** Source XS Classic Repository database objects (such as .hdbdd, .hdbtable, .hdbview, etc.) are transformed into their corresponding SAP HANA Native compliant database artifacts, with naming adapted to SAP HANA Cloud conventions.
 
 > [!CAUTION]
 > As automated conversion is not guaranteed to be 100% accurate, human intervention is required post-migration to validate, refine, and productionize the application logic and service definitions.
@@ -56,7 +54,7 @@ SAP HANA Interactive Education or SHINE is a demo application that is packaged a
   - Structured Privilege
   - Analytical Privilege
 
-HCO_DEMOCONTENT follows the XS Classic Programming Model(XSC) and uses SAP HANA on-premise for the database. This article describes the steps to be followed to migrate this Delivery Unit from XS Classic to SAP HANA Native with SAP HANA Cloud as the database along with service layer using the SAP HANA Application Migration Assistant.
+HCO_DEMOCONTENT follows the XS Classic Programming Model(XSC) and uses SAP HANA on-premise for the database. This article describes the steps to be followed to migrate this Delivery Unit from XS Classic to SAP HANA Native with SAP HANA Cloud as the database using the SAP HANA Application Migration Assistant.
 
 <p align="center">
 <img src="images\SolutionDiagramNew.png">
@@ -230,21 +228,17 @@ And the following additional properties:
 <img width="545" alt="end" src="images\DeliveryUnit3.png">
 </p>
 
-10. Select "Yes" if you would like to convert Service Layer using GenAI capabilities.
-    
-> [!IMPORTANT]  
-> Service Layer conversion is available only in SAP Build plans. 
-> This feature is currently experimental and free, but is subject to change in the future
-
-<p align="center">
-<img width="545" alt="end" src="images\service_layer_selection.png">
-</p>
-
-
-11.   Select the XSC Compatilibity Mode by setting it to True, False or Default.
+10. Select the XSC Compatilibity Mode by setting it to True, False or Default.
 
 <p align="center">
 <img width="545" alt="end" src="images\xscCompatibilityMode.png">
+</p>
+
+11. Select the Migration Type (Default: non-staged)
+If your application depends on objects from external schemas or HDI containers, a non-staged migration generates single hdbsynonym, hdbsynonymconfig, and hdbgrants files to provide access. Staged migration, on the other hand, creates separate files for each external object, allowing you to isolate access as needed.
+
+<p align="center">
+<img width="545" alt="end" src="images\stagedMigration.png">
 </p>
 
 **xsc-compatibility-mode** is a view property introduced to maintain behavioral compatibility with how Calculation Views, especially those with aggregation nodes or star joins, worked in XS Classic (XSC) when migrating them to HANA Deployment Infrastructure (HDI) in XSA.
@@ -259,7 +253,6 @@ please refer to [xsCompatibilitymode](https://help.sap.com/docs/hana-cloud-datab
 11. When a notification appears in the bottom-right corner of your screen, it indicates that the migration process has started. This notification will provide real-time updates throughout the process. 
 At the end of the migration, a SAP HANA Native project will be generated, containing:
     -  Revised database artifacts
-    -  The service layer (if service layer conversion was selected)
     -  A `report.html` file summarizing migration details and areas requiring manual review.
 
 <p align="center">
@@ -267,7 +260,7 @@ At the end of the migration, a SAP HANA Native project will be generated, contai
 </p>
 
 ## Step-5: Database post migration changes
-Once the project is created, there are some adjustments we need to make manually as these are not currently handled by the SAP HANA Application Migration Assistant. We have provided the changed files for [HCO_DEMOCONTENT](https://github.com/SAP-samples/xsc-hana-native-migration/tree/main/hana-shine-cap-final) for reference.
+Once the project is created, there are some adjustments we need to make manually as these are not currently handled by the SAP HANA Application Migration Assistant. We have provided the changed files for [HCO_DEMOCONTENT](https://github.com/SAP-samples/xsc-hana-native-migration/tree/main/hana-shine-native-final) for reference.
  1. If your project contains any files from a different schema, these need to be migrated before migrating the current Delivery Unit and included in this project. If this can't be done immediately, you can remove them for the time being. To utilize objects from other containers, please refer to the SAP HANA Cloud help documentation and configure accordingly.
     
     For the HCO_DEMOCONTENT project, make the following changes:
@@ -348,7 +341,7 @@ Once the project is created, there are some adjustments we need to make manually
          ]
        }
        ```
-       **Reason**: Roles are not needed for executing procedures in the same container. Instead, you can add authorization based on users in SAP CAP.
+       **Reason**: Roles are not needed for executing procedures in the same HDI container.
      - Alter `db/src/roles/Admin.hdbrole` by replacing the existing schema privileges and adding schema analytic privileges:
        ```
        "schema_privileges": [
@@ -451,13 +444,6 @@ For migration of data using the SAP HANA Application Migration Assistant, please
 
 **Database:**
 - Some artifacts which are currently not supported in the SAP HANA Application Migration Assistant require manual remodeling before deployment. You can find detailed information on manually migrating these artifacts in the following [link](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-migration-guide/checks-performed-by-migration-tool).
-
-**Service Layer:**
-
-- *Entity Imports:*   Namespaces in `.hdbcds` may break using statements 
-- *Role Definitions:* `xsprivileges` are not automatically mapped to @requires or security roles
-- *Custom SQL Logic:* Complex logic in procedures or views and cases where table is an input, may need manual refactoring
-- *Shared Services:*	 Same entity exposed across multiple services. CAP requires disambiguation
 
 
 ## Supported Features
